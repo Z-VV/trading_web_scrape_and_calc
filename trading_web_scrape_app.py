@@ -11,7 +11,6 @@ import time
 from win32com.client import Dispatch
 import sys,os
 
-
 pd.set_option('max_columns',None)
 running=True
 minutes=1
@@ -24,9 +23,7 @@ def interface():
         entryw,entry2w,entry3w,entrye,entry2e,entry3e,entryr,entry2r,entry3r,window,button,entry_refresh,button_stop
     print(repr(sys.argv[0]))
     print(repr(os.getcwd()))
-
     window=tkinter.Tk()
-
     window.title('Stock Calculator')
     window.config(background='SlateGray2')
     window.geometry("800x560")
@@ -62,7 +59,6 @@ def interface():
     empty_label5 = Label(window, text='', bg='LightSteelBlue1')
 
     button=Button(window,text='SUBSCRIBE',command=Interface_entry,bd=5,bg='light blue')
-
     button_stop = Button(window, text='STOP!', command=stop, bd=5, bg='light blue')
 
     entry = Entry(window, bd=3, bg='lavender')
@@ -157,16 +153,13 @@ def scrape(my_url):
         except:
             print('trying')
             time.sleep(5)
-
     page_soup = soup(r.text,"html.parser")
     tablica=page_soup.find('div',{'id':'wrapper_btm'})
     price_table=tablica.find('table')
     spans=price_table.find_all('span')
-
     splited=(spans[0].text).split(' ')
     now=datetime.datetime.now()
     symbol=splited[2]
-
     sheet1.write(0,0,str(now.strftime('%d-%m-%Y')),xlwt.easyxf("pattern: pattern solid, fore_color yellow; font: color black; align: horiz center"))
     sheet1.write(1,0,'last update: '+str(now.strftime("%H:%M:%S")),xlwt.easyxf("pattern: pattern solid, fore_color yellow; font: color black; align: horiz center"))
     sheet1.write(2,0,splited[2],xlwt.easyxf("pattern: pattern solid, fore_color yellow; font: color black; align: horiz center"))
@@ -249,7 +242,6 @@ def calculationsMAX(range_from,range_to):
             OTM_PE=df.loc[0:x-1]
             OTM_CE=df.loc[x::]
 
-
     OTM_PE_mirror=OTM_PE
     OTM_CE_mirror=OTM_CE
     OTM_CE_mirror.drop(OTM_CE_mirror.tail(1).index, inplace=True)
@@ -314,7 +306,6 @@ def calculationsMAX(range_from,range_to):
     except:
         pass
 
-
     try:
         for x in range(6):
             maxima=OTM_CE_mirror['oi'].max()
@@ -339,13 +330,8 @@ def calculationsMAX(range_from,range_to):
     except:
         pass
 
-    #print(max_in_PE)
     print(LTP_in_PE)
-    #print(max_in_CE)
     print(LTP_in_CE)
-    #print(strike_price_CE)
-    #print(price_range_list)
-
 
 def Interface_entry():
     global data_dic,running,fon,fon_q,fon_w,fon_e,fon_r,refresh_rate,button,hours,minutes
@@ -377,7 +363,6 @@ def Interface_entry():
     range_to_r = entry3r.get()
     data_dic[link_r] = [range_from_r, range_to_r]
     print(data_dic)
-
     if link=='':
         messagebox.showerror('error',message='Please enter URL!')
 
@@ -386,7 +371,6 @@ def Interface_entry():
         messagebox.showerror('error', message='Please enter Refresh rate!')
 
     if refresh_rate!='':
-        #try:
             refresh_rate=int(refresh_rate)
             minutes=refresh_rate % 60
             hours=refresh_rate // 6
@@ -398,8 +382,6 @@ def Interface_entry():
                     button.config(bg='lime green', text='LIVE')
                     button_stop.config(bg='firebrick3')
                     running=True
-
-
     print(running)
 
 def stop():
@@ -408,7 +390,6 @@ def stop():
         button_stop.config(bg='light blue')
     running=False
     button.config(bg='light blue',text='SUBSCRIBE')
-
 
 def scanning():
     global running
@@ -426,7 +407,6 @@ def scanning():
 def sheet2(range_from,range_to,symbol,first):
     global string
     string = str(dirname + '\Results__' + str(symbol) + '.xls')
-
     wb = Workbook()
 
     sheet2 = wb.add_sheet('Sheet 2')
@@ -437,9 +417,6 @@ def sheet2(range_from,range_to,symbol,first):
     sheet2.write_merge(0, 0, 15, 26, "Top PEs",
                        xlwt.easyxf("pattern: pattern solid, fore_color 46; font: color black; align: horiz center"))
     sheet2.write_merge(1, 1,0,2, 'Current Price',xlwt.easyxf("pattern: pattern solid, fore_color 51; font: color black; align: horiz center"))
-
-
-
     try:
         i=0
         for x in range(1,13):
@@ -450,7 +427,6 @@ def sheet2(range_from,range_to,symbol,first):
                 i+=1
     except:
         pass
-
 
     try:
         i=0
@@ -482,8 +458,6 @@ def sheet2(range_from,range_to,symbol,first):
             sheet2.write(2 + index_of_current_price, 14 + x, LTP_in_PE[i],
                          xlwt.easyxf("pattern: pattern solid, fore_color 51; font: color black; align: horiz center"))
             i += 1
-
-
     try:
         i=0
         for x in range(len(price_range_list)):
@@ -508,16 +482,11 @@ def sheet2(range_from,range_to,symbol,first):
         wb.save(string)
 
     xl = Dispatch("Excel.Application")
-
     wz = xl.Workbooks.Open(dirname+'\Results__' + str(symbol)+'.xls')
-
     wz.Close(True,string)
-
     time.sleep(0.05)
     wb.save(string)
-
     xl.Workbooks.Open(dirname+'\Results__' + str(symbol)+'.xls')
-
     xl.Visible = True
 
 def excelOpen(symbol):
